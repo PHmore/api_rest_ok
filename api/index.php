@@ -7,6 +7,12 @@ error_reporting(E_ALL);
 header('Acess-Control-Allow-Origin: *');
 header('Content-type: application/json');
 
+$url = $_SERVER ["REQUEST_URI"];
+
+$dados = file_get_contents("php://input");
+$data = json_decode($dados);
+//var_dump($url);
+
 if(isset($_GET['path'])){
     
     $path = explode("/", $_GET['path']);
@@ -20,7 +26,8 @@ if(isset($path[2])){$param = $path[2];} else {$param="";}
 $method = $_SERVER['REQUEST_METHOD'];
 
 //é necessário ter atenção com a ordem das coisas pois a conexão é feita antes
-include_once "connection/connection.php";
+include_once "connection/Connection.php";
 include_once "controller/users.php";
 
 echo $response;
+?>

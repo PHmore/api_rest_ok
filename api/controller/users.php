@@ -10,7 +10,7 @@ if ($api == 'users') {
     if ($method == "GET") {
         if ($acao == 'listar' && $param == '') {
             try {
-                $db = DB::connect();
+                $db = Connection::connect();
                 $rs = $db->prepare("SELECT * FROM users ORDER BY user_id");
                 $rs->execute();
                 $obj = $rs->fetchAll(PDO::FETCH_ASSOC);
@@ -27,10 +27,10 @@ if ($api == 'users') {
 
         } else if ($acao == 'listar' && $param != '') {
             try {
-                $db = DB::connect();
+                $db = Connection::connect();
                 $rs = $db->prepare("SELECT * FROM users WHERE user_id = {$param}");
                 $rs->execute();
-                $obj = $rs->fetchObject();
+                $obj = $rs->fetchAll(PDO::FETCH_ASSOC);
 
                 if ($obj) {
                     $response = ["dados" => $obj]; // Não precisa de json_encode aqui
@@ -52,36 +52,16 @@ if ($api == 'users') {
         }
 
         if ($acao == 'cadastrar' && $param == '') {
-            $sql = "INSERT INTO users (";
-
-            $contador = 1;
-
-            foreach (array_keys($_POST) as $indice) {
-                if (count($_POST) > $contador) {
-                    $sql .= "{$indice},";
-                } else {
-                    $sql .= "{$indice}";
-                }
-                $contador++;
-            }
-
-            $sql .= ") VALUES (";
-
-            $contador = 1;
-
-            foreach (array_values($_POST) as $valor) {
-                if (count($_POST) > $contador) {
-                    $sql .= "'{$valor}',";
-                } else {
-                    $sql .= "'{$valor}'";
-                }
-                $contador++;
-            }
-
-            $sql .= ")";
+                $data = json_decode(file_get_contents('php://input'), true);
+    
+                $nome = $data['nome'];
+                $senha = $data['senha'];
+    
+                //$user = $user->cadastrarItem($nome, $senha);
+            $sql = "INSERT INTO users (nome,senha) VALUES ('$nome','$senha')";
 
             // esse método instancia o objeto e já chama a função Connect
-            $data = DB::Connect();
+            $data = Connection::Connect();
             $result = $data->prepare($sql);
             $exec = $result->execute();
 
