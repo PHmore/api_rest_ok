@@ -1,6 +1,6 @@
 <?php
 
-class DB
+class Connection
 {
     public static function connect(){
         $host = "localhost";
