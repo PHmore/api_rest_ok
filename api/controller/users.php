@@ -45,6 +45,54 @@ if ($api == 'users') {
         } else {
             $response = ['ERRO' => 'Caminho não encontrado'];
         }
+    } else 
+    if ($method == 'POST') {
+        if ($acao == '' && $param == '') {
+            $response = ['ERRO' => 'Caminho não encontrado'];
+        }
+
+        if ($acao == 'cadastrar' && $param == '') {
+            $sql = "INSERT INTO users (";
+
+            $contador = 1;
+
+            foreach (array_keys($_POST) as $indice) {
+                if (count($_POST) > $contador) {
+                    $sql .= "{$indice},";
+                } else {
+                    $sql .= "{$indice}";
+                }
+                $contador++;
+            }
+
+            $sql .= ") VALUES (";
+
+            $contador = 1;
+
+            foreach (array_values($_POST) as $valor) {
+                if (count($_POST) > $contador) {
+                    $sql .= "'{$valor}',";
+                } else {
+                    $sql .= "'{$valor}'";
+                }
+                $contador++;
+            }
+
+            $sql .= ")";
+
+            // esse método instancia o objeto e já chama a função Connect
+            $data = DB::Connect();
+            $result = $data->prepare($sql);
+            $exec = $result->execute();
+
+            if ($exec) {
+                $response = ["dados" => 'Dados foram inseridos com sucesso'];
+            } else {
+                $response = ["dados" => 'Não foi possível inserir os dados'];
+            }
+        } else {
+            $response = ['ERRO' => 'Caminho não encontrado'];
+        }
     }
 
 }
